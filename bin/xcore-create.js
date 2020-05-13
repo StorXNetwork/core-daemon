@@ -44,7 +44,7 @@ function whichEditor() {
 
 storjshare_create
   .description('generates a new node configuration')
-  .option('--storj <addr>', 'specify the STORJ address (required)')
+  .option('--storx <addr>', 'specify the STORX address (required)')
   .option('--key <privkey>', 'specify the private key')
   .option('--storage <path>', 'specify the storage path')
   .option('--size <maxsize>', 'specify node size (ex: 10GB, 1TB)')
@@ -60,12 +60,12 @@ storjshare_create
   .option('-o, --outfile <writepath>', 'write config to path')
   .parse(process.argv);
 
-if (!storjshare_create.storj) {
-  console.error('\n  no payment address was given, try --help');
+if (!storjshare_create.storx) {
+  console.error('\n  no --storx payment address was given, try --help');
   process.exit(1);
 }
 
-if (!utils.isValidEthereumAddress(storjshare_create.storj)) {
+if (!utils.isValidEthereumAddress(storjshare_create.storx)) {
   console.error('\n SJCX addresses are no longer supported. \
 Please enter ERC20 compatible ETH wallet address');
   process.exit(1);
@@ -78,14 +78,14 @@ if (!storjshare_create.key) {
 if (!storjshare_create.storage) {
   storjshare_create.storage = path.join(
     homedir(),
-    '.config/storjshare/shares',
+    '.xcore/shares',
     storj.KeyPair(storjshare_create.key).getNodeID()
   );
   mkdirp.sync(storjshare_create.storage);
 }
 
 if (!storjshare_create.outfile) {
-  const configDir = path.join(homedir(), '.config/storjshare/configs');
+  const configDir = path.join(homedir(), '.xcore/configs');
   storjshare_create.outfile = path.join(
     configDir, storj.KeyPair(storjshare_create.key).getNodeID() + '.json'
   );
@@ -96,7 +96,7 @@ if (!storjshare_create.outfile) {
 if (!storjshare_create.logdir) {
   storjshare_create.logdir = path.join(
     homedir(),
-    '.config/storjshare/logs'
+    '.xcore/logs'
   );
   mkdirp.sync(storjshare_create.logdir);
 }
@@ -150,7 +150,7 @@ will be used.', getDefaultConfigValue('loggerVerbosity').value);
   );
 }
 
-replaceDefaultConfigValue('paymentAddress', storjshare_create.storj);
+replaceDefaultConfigValue('paymentAddress', storjshare_create.storx);
 replaceDefaultConfigValue('networkPrivateKey', storjshare_create.key);
 replaceDefaultConfigValue('storagePath',
                           path.normalize(storjshare_create.storage));

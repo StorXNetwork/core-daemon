@@ -1,21 +1,21 @@
 {
-  "name": "storjshare-daemon",
+  "name": "xcore-daemon",
   "version": "5.3.1",
-  "description": "daemon + process manager for sharing space on the storj network",
+  "description": "daemon + process manager for sharing space on the StorX network",
   "main": "index.js",
   "bin": {
-    "storjshare": "bin/storjshare.js",
-    "storjshare-start": "bin/storjshare-start.js",
-    "storjshare-stop": "bin/storjshare-stop.js",
-    "storjshare-restart": "bin/storjshare-restart.js",
-    "storjshare-status": "bin/storjshare-status.js",
-    "storjshare-logs": "bin/storjshare-logs.js",
-    "storjshare-save": "bin/storjshare-save.js",
-    "storjshare-load": "bin/storjshare-load.js",
-    "storjshare-killall": "bin/storjshare-killall.js",
-    "storjshare-destroy": "bin/storjshare-destroy.js",
-    "storjshare-daemon": "bin/storjshare-daemon.js",
-    "storjshare-create": "bin/storjshare-create.js"
+    "xcore": "bin/xcore.js",
+    "xcore-start": "bin/xcore-start.js",
+    "xcore-stop": "bin/xcore-stop.js",
+    "xcore-restart": "bin/xcore-restart.js",
+    "xcore-status": "bin/xcore-status.js",
+    "xcore-logs": "bin/xcore-logs.js",
+    "xcore-save": "bin/xcore-save.js",
+    "xcore-load": "bin/xcore-load.js",
+    "xcore-killall": "bin/xcore-killall.js",
+    "xcore-destroy": "bin/xcore-destroy.js",
+    "xcore-daemon": "bin/xcore-daemon.js",
+    "xcore-create": "bin/xcore-create.js"
   },
   "directories": {
     "test": "test",
@@ -30,12 +30,12 @@
   "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/storj/storjshare-daemon.git"
+    "url": "git+https://github.com/StorXNetwork/xcore-daemon.git"
   },
   "keywords": [
-    "storj",
+    "StorX",
     "farmer",
-    "storjshare",
+    "xcore",
     "share"
   ],
   "author": "Alexander Leitner <alex@storj.io>",
@@ -55,40 +55,41 @@
   ],
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/storj/storjshare-daemon/issues"
+    "url": "https://github.com/StorXNetwork/xcore-daemon/issues"
   },
-  "homepage": "https://github.com/storj/storjshare-daemon#readme",
+  "homepage": "https://github.com/StorXNetwork/xcore-daemon#readme",
   "dependencies": {
-    "async": "^2.5.0",
-    "blindfold": "0.0.1",
-    "bytes": "^3.0.0",
+    "async": "^3.1.0",
+    "blindfold": "^1.0.1",
+    "bytes": "^3.1.0",
     "cli-table": "^0.3.1",
-    "colors": "^1.1.2",
-    "commander": "^2.11.0",
+    "colors": "^1.3.3",
+    "commander": "^2.20.0",
     "daemon": "github:zipang/daemon.node#48d0977c26fb3a6a44ae99aae3471b9d5a761085",
-    "diskusage": "^0.2.4",
+    "diskusage": "^1.1.3",
     "dnode": "^1.2.2",
-    "du": "^0.1.0",
+    "du": "^1.0.0",
     "editor": "^1.0.0",
     "fslogger": "^2.0.2",
     "kad-logger-json": "^0.1.2",
     "mkdirp": "^0.5.1",
-    "moment": "^2.19.3",
-    "pretty-ms": "^3.0.1",
-    "rc": "^1.2.2",
-    "storj-lib": "^8.7.2",
-    "strip-json-comments": "^2.0.1",
-    "tail": "^1.2.3",
+    "moment": "^2.24.0",
+    "pretty-ms": "^5.0.0",
+    "rc": "^1.2.8",
+    "storj-lib": "StorXNetwork/core#v8.7.3-beta",
+    "strip-json-comments": "^3.0.1",
+    "tail": "^2.0.2",
     "touch": "3.1.0",
-    "web3-utils": "^1.0.0-beta"
+    "web3-utils": "^1.0.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "chai": "^2.2.0",
     "coveralls": "^2.11.2",
-    "istanbul": "^0.3.13",
-    "jshint": "2.8.0",
+    "istanbul": "^0.4.5",
+    "jshint": "^2.10.2",
     "mocha": "^2.2.4",
-    "proxyquire": "^1.7.3",
+    "proxyquire": "^2.1.1",
     "sinon": "^1.14.1"
   }
 }

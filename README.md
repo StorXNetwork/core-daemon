@@ -1,22 +1,72 @@
-_**Notice**: Development on this repo is on pause until we finish our v3 rearchitecture. Please see https://github.com/storj/storj for ongoing v3 development._
-
-Storj Share Daemon
+Core Daemon
 ==================
 
-[![Build Status](https://img.shields.io/travis/Storj/storjshare-daemon.svg?style=flat-square)](https://travis-ci.org/Storj/storjshare-daemon)
+[![Build Status](https://travis-ci.com/StorXNetwork/xcore-daemon.svg?branch=master)](https://travis-ci.com/StorXNetwork/xcore-daemon)
 [![Coverage Status](https://img.shields.io/coveralls/Storj/storjshare-daemon.svg?style=flat-square)](https://coveralls.io/r/Storj/storjshare-daemon)
 [![NPM](https://img.shields.io/npm/v/storjshare-daemon.svg?style=flat-square)](https://www.npmjs.com/package/storjshare-daemon)
 [![License](https://img.shields.io/badge/license-AGPL3.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/Storj/storjshare-daemon/master/LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg?style=flat-square)](https://store.docker.com/community/images/computeronix/storjshare-daemon)
 
-Daemon + CLI for farming data on the Storj network, suitable for standalone
-use or inclusion in other packages.
+Daemon + CLI for farming data on the StorX network, suitable for standalone
+use / frameless environment or inclusion in other packages.
 
-## Installation via Arch User Repositories
+## TL;DR
 
-storjshare daemon is also available for Arch Linux as a package on the AUR as [storjshare-daemon](https://aur.archlinux.org/packages/storjshare-daemon/). Install it via your favourite AUR helper.
+```
+sudo apt update
+sudo apt install git python
 
-## Manual Installation
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+nvm install 8.15
+
+export STORJ_NETWORK=STORX
+
+git clone https://github.com/StorXNetwork/core-daemon
+cd core-daemon
+npm i && npm link
+
+```
+
+### Start core-daemon with old Core configuration
+
+Make sure to close X Core before running xcore-daemon
+
+```
+xcore daemon
+xcore start --config /home/user/.xcore/your_nodeid.json
+```
+
+### Create a new node
+
+Parameters needed (examples):
+* Wallet address (0x0000000000000000000000000000000000000000)
+* Public IP (81.81.81.81)
+* Public port (12345)
+* Path of folder to share (/home/user/xcore)
+* Size of storage to share (10GB)
+
+```
+xcore create --storx 0x0000000000000000000000000000000000000000 --storage /home/user/xcore --size 10TB --rpcport 12345 --rpcaddress 81.81.81.81 --noedit
+```
+
+This command will only generate a new node configuration file on /home/user/.xcore/configs
+
+Filename is [your node id].json
+
+To start this new node, enter:
+
+```
+export STORJ_NETWORK=STORX
+xcore daemon
+xcore start --config /home/user/.xcore/configs/your_node_id.json
+```
+
+## Installation
 
 Make sure you have the following prerequisites installed:
 
@@ -87,18 +137,18 @@ Once build dependencies have been installed for your platform, install the
 package globally using Node Package Manager:
 
 ```
-npm install --global storjshare-daemon
+npm install --global StorXNetwork/xcore-daemon
 ```
 
 ## Usage (CLI)
 
-Once installed, you will have access to the `storjshare` program, so start by
+Once installed, you will have access to the `xcore` program, so start by
 asking it for some help.
 
 ```
-storjshare --help
+xcore --help
 
-  Usage: storjshare [options] [command]
+  Usage: xcore [options] [command]
 
 
   Commands:
@@ -123,16 +173,16 @@ storjshare --help
 You can also get more detailed help for a specific command.
 
 ```
-storjshare help create
+xcore help create
 
-  Usage: storjshare-create [options]
+  Usage: xcore-create [options]
 
   generates a new share configuration
 
   Options:
 
     -h, --help                 output usage information
-    --storj <addr>             specify the STORJ address (required)
+    --storx <addr>              specify the STORX address (required)
     --key <privkey>            specify the private key
     --storage <path>           specify the storage path
     --size <maxsize>           specify share size (ex: 10GB, 1TB)
@@ -149,7 +199,7 @@ storjshare help create
 
 ## Usage (Programmatic)
 
-The Storj Share daemon uses a local [dnode](https://github.com/substack/dnode)
+The X Core daemon uses a local [dnode](https://github.com/substack/dnode)
 server to handle RPC message from the CLI and other applications. Assuming the
 daemon is running, your program can communicate with it using this interface.
 The example that follows is using Node.js, but dnode is implemented in many
@@ -175,20 +225,20 @@ You can also easily start the daemon from your program by creating a dnode
 server and passing it an instance of the `RPC` class exposed from this package.
 
 ```js
-const storjshare = require('storjshare-daemon');
+const xcore = require('xcore-daemon');
 const dnode = require('dnode');
-const api = new storjshare.RPC();
+const api = new xcore.RPC();
 
 dnode(api.methods).listen(45015, '127.0.0.1');
 ```
 
 ## Configuring the Daemon
 
-The Storj Share daemon loads configuration from anywhere the
+The X Core daemon loads configuration from anywhere the
 [rc](https://www.npmjs.com/package/rc) package can read it. The first time you
-run the daemon, it will create a directory in `$HOME/.config/storjshare`, so
+run the daemon, it will create a directory in `$HOME/.xcore`, so
 the simplest way to change the daemon's behavior is to create a file at
-`$HOME/.config/storjshare/config` containing the following:
+`$HOME/.xcore/config` containing the following:
 
 ```json
 {
@@ -205,162 +255,48 @@ detailed explanation of these properties.
 ## Debugging the Daemon
 
 The daemon logs activity to the configured log file, which by default is
-`$HOME/.config/storjshare/logs/daemon.log`. However if you find yourself
+`$HOME/.xcore/logs/daemon.log`. However if you find yourself
 needing to frequently restart the daemon and check the logs during
 development, you can run the daemon as a foreground process for a tighter
 feedback loop.
 
 ```
-storjshare killall
-storjshare daemon --foreground
+xcore killall
+xcore daemon --foreground
 ```
 
 ## Connecting to a remote Daemon
 
-**Note: Exposing your storjshare-daemon to the Internet is a bad idea
+**Note: Exposing your xcore-daemon to the Internet is a bad idea
 as everybody could read your Private Key!**
 
 To connect to a remote running daemon instance you will first need to
 ensure this daemon is running on a different address than the default
 `127.0.0.1`. This can be achieved by [configuring the Daemon](#configuring-the-daemon).
 
-After your storjshare-daemon is reachable (eg. within your home network)
+After your xcore-daemon is reachable (eg. within your home network)
 you can use `-r` or `--remote` option (on supported commands) to use the
 specified IP/hostname and port to connect to, instead of `127.0.0.1`.
 
-**Note that this option does not support to start the storjshare-daemon
+**Note that this option does not support to start the xcore-daemon
 on a different system, only connect to an already running one!**
 
 Example to connect to remote daemon running on `192.168.0.10` on the default port (`45015`) and show the status:
 
 ```
-storjshare status --remote 192.168.0.10
+xcore status --remote 192.168.0.10
 ```
 
 If the port is changed, just append it like so:
 
 ```
-storjshare status --remote 192.168.0.10:51000
-```
-
-## Migrating from [`storjshare-gui`](https://github.com/storj/storjshare-gui) or [`storjshare-cli`](https://github.com/storj/storjshare-cli)
-#### storjshare-gui
-If you are using the `storjshare-gui` package you can go on with the latest
-GUI release. You don't need to migrate but if you like you can do it. If you
-choose to migrate from the old storjshare-gui to the CLI version of
-storjshare-daemon, please follow the instructions below.
-
-#### storjshare-cli
-Storj Share provides a simple method for creating new shares, but if you were
-previously using the `storjshare-cli` package superceded by this one, you'll
-want to migrate your configuration to the new format. To do this, first you'll
-need to dump your private key **before** installing this package.
-
-> If you accidentally overwrote your old `storjshare-cli` installation with
-> this package, don't worry - just reinstall the old package to dump the key,
-> then reinstall this package.
-
-### Step 0: Dump Your Private Key
-
-#### storjshare-gui
-Open `%AppData%\Storj Share\settings.json` in any texteditor.
-For each GUI drive you will find the private key and the dataDir. Use these
-information and go on with Step 1 and 2.
-```
-{
-  "tabs": [
-    {
-      "key": "4154e85e87b323611cba45ab1cd51203f2508b1da8455cdff8b641cce827f3d6",
-      "address": "0xfB691...",
-      "storage": {
-        "dataDir": "D:\\Storj\\storjshare-5f4722"
-      }
-    },
-    {
-      "key": "0b0341a9913bb84b51485152a1b0a8a6ed68fa4f9a4fedb26c61ff778ce61ec8",
-      "address": "0xfB691...",
-      "storage": {
-        "dataDir": "D:\\Storj\\storjshare-48a1c4"
-      }
-  ],
-  "appSettings": {...}
-}
-```
-
-#### storjshare-cli
-You can print your cleartext private key from storjshare-cli, using the
-`dump-key` command:
-
-```
-storjshare dump-key
- [...]  > Unlock your private key to start storj  >  ********
-
- [info]   Cleartext Private Key:
- [info]   ======================
- [info]   4154e85e87b323611cba45ab1cd51203f2508b1da8455cdff8b641cce827f3d6
- [info]   
- [info]   (This key is suitable for importing into Storj Share GUI)
-```
-
-If you are using a custom data directory, be sure to add the `--datadir <path>`
-option to be sure you get the correct key. Also be sure to note your defined
-payout address and data directory.
-
-### Step 1: Install Storj Share and Create Config
-
-Now that you have your private key, you can generate a new configuration file.
-To do this, first install the `storjshare-daemon` package globally and use the
-`create` command. You'll need to remove the `storjshare-cli` package first, so
-make sure you perform the previous step for all shared drives before
-proceeding forward.
-
-```
-npm remove -g storjshare-cli
-npm install -g storjshare-daemon
-```
-
-Now that you have Storj Share installed, use the `create` command to generate
-your configuration.
-
-```
-storjshare create --key 4154e8... --storj 0xfB691... --storage <datadir> -o <writepath>
-```
-
-This will generate your configuration file given the parameters you passed in,
-write the file to the path following the `-o` option, and open it in your text
-editor. Here, you can make other changes to the configuration following the
-detailed comments in the generated file.
-
-### Step 2: Use The New Configuration
-
-Now that you have successfully migrated your configuration file, you can use
-it to start the share.
-
-```
-storjshare start --config path/to/config.json
-
-  * daemon is not running, starting...
-
-  * starting share with config at path/to/config.json
-```
-
-#### Updating storjshare and restoring sessions
-
-If you want to upgrade storjshare you can save your current session and
-reload it after updating
-
-```
-storjshare save
-storjshare killall
-npm install -g storjshare-daemon
-storjshare daemon &
-storjshare load
+xcore status --remote 192.168.0.10:51000
 ```
 
 ## License
 
-Storj Share - Daemon + CLI for farming data on the Storj network.  
-Copyright (C) 2017 Storj Labs, Inc
+X Core - Daemon + CLI for farming data on the StorX network.  
+Copyright (C) 2019 StorX Universal Technologies Sociedad Limitada
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
