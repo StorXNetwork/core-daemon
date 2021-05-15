@@ -14,7 +14,7 @@
   "bridges":[
     {
       "url": "https://api.storx.io",
-      "extendedKey": "xpub69vZdaeqerAfCThNZu6Zifz5K8XvFiPxG6UHZck5NC9ezmo48D8WmwhKYWjyxuwQVA3otsBZ8NFqfKvSGfLdY1qvTC75ZYUeYhJQdgdCgWJ"
+      "extendedKey": "xpub6AXRKD954q4187dsh5HAaVe3aZjF2ziNixYYQRTUJs5k8og5HvezJ93Tt5QWy95gvzM8tLWeHHxysxRt8tSc6jzwZR8cyrcPrT9VrX55VRQ"
     }
   ],
   // Known preferred seeds in form of a storx URI
