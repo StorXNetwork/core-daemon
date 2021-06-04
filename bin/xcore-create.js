@@ -67,7 +67,7 @@ if (!storjshare_create.storx) {
 
 if (!utils.isValidEthereumAddress(storjshare_create.storx)) {
   console.error('\n SJCX addresses are no longer supported. \
-Please enter ERC20 compatible ETH wallet address');
+Please enter XRC20 compatible XDC Wallet address');
   process.exit(1);
 }
 
