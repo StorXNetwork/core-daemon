@@ -7,6 +7,7 @@ const storj = require('storj-lib');
 const Logger = require('kad-logger-json');
 const config = JSON.parse(JSON.stringify(require('../lib/config/farmer')));
 const bytes = require('bytes');
+var cron = require('node-cron');
 const processIsManaged = typeof process.send === 'function';
 
 let spaceAllocation = bytes.parse(config.storageAllocation);
@@ -46,6 +47,18 @@ const farmer = storj.Farmer(config);
 config.logger.on('log', () => farmerState.lastActivity = Date.now());
 config.logger.pipe(process.stdout);
 
+// let taskArr = [];
+let task = cron.schedule('0 0 */1 * * *', () =>  {
+  config.logger.info('Running cron every hour');
+  try {
+    farmer.updateBridgeContactForNodeStatus(()=> {
+      config.logger.info('Node updated successfully', Date.now());
+    })
+  } catch (e) {
+    config.logger.error('updateBridgeContactForNodeStatus errored out.', e);
+  }
+});
+
 farmer.join((err) => {
   if (err) {
     config.logger.error(err.message);
@@ -54,6 +67,11 @@ farmer.join((err) => {
 })
 farmer.on('bridgeConnected', (bridge) => {
   farmerState.bridges[bridge.extendedKey] = bridge;
+  // if (taskArr.length > 0) {
+  //   task.stop();
+  // }
+  task.start();
+  // taskArr.push(task)
   config.logger.info('Connected to bridge: %s', bridge.url);
 });
 farmer.connectBridges();
