@@ -48,7 +48,7 @@ config.logger.on('log', () => farmerState.lastActivity = Date.now());
 config.logger.pipe(process.stdout);
 
 // let taskArr = [];
-let task = cron.schedule('0 0 */1 * * *', () =>  {
+let task = cron.schedule('0 0 */8 * * *', () =>  {
   config.logger.info('Running cron every hour');
   try {
     farmer.updateBridgeContactForNodeStatus(()=> {
